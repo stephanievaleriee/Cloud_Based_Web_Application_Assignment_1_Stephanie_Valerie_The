@@ -27,11 +27,10 @@ export default function AboutPage() {
         <h3>Project Demonstration Video</h3>
         <p>You can watch my presentation video below:</p>
 
-        {/* Responsive YouTube Embed */}
         <div
           style={{
             position: 'relative',
-            paddingBottom: '56.25%', // 16:9 aspect ratio
+            paddingBottom: '56.25%', 
             height: 0,
             overflow: 'hidden',
             borderRadius: '8px',
@@ -39,7 +38,7 @@ export default function AboutPage() {
           }}
         >
           <iframe
-            src="https://www.youtube.com/embed/dQw4w9WgXcQ" // replace this with your real YouTube link later
+            src="https://www.youtube.com/embed/ONsz4YadZ9I"
             title="Project Presentation Video"
             style={{
               position: 'absolute',
