@@ -3,13 +3,23 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --header-bg: #222;
+  --header-fg: #fff;
+  --accent: #0b5cff;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+:root[data-theme='light'] {
+  --background: #ffffff;
+  --foreground: #171717;
+  --header-bg: #222;
+  --header-fg: #ffffff;
+}
+
+:root[data-theme='dark'] {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  --header-bg: #0b0b0b;
+  --header-fg: #ffffff;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -19,8 +29,162 @@
   }
 }
 
-body {
+.page-body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--header-bg);
+  color: var(--header-fg);
+  padding: 10px 16px;
+  position: relative;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.student-number {
+  font-weight: 700;
+  background: rgba(0,0,0,0.08);
+  padding: 6px 8px;
+  border-radius: 6px;
+  color: var(--header-fg);
+}
+
+/* Hamburger button with CSS transform */
+.hamburger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 36px;
+  background: transparent;
+  border: none;
+  color: var(--header-fg);
+  font-size: 20px;
+  cursor: pointer;
+  transform-origin: center;
+  transition: transform 0.25s ease;
+}
+
+.hamburger.open {
+  transform: rotate(90deg) scale(1.05);
+}
+
+.nav {
+  display: none;
+}
+
+.nav.show {
+  display: block;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%; 
+  background: var(--header-bg);
+  padding: 8px 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 80;
+}
+
+.nav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+@media (min-width: 720px) {
+  .nav {
+    display: block !important;
+    position: static;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .nav-list {
+    flex-direction: row;
+    gap: 12px;
+  }
+}
+
+.nav-link {
+  color: var(--header-fg);
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: background 0.2s ease;
+  display: inline-block;
+}
+
+.nav-link.active,
+.nav-link:hover,
+.nav-link:focus {
+  background: rgba(255, 255, 255, 0.1);
+  outline: none;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.theme-toggle {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--header-fg);
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background 0.2s ease;
+}
+
+.theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+
+.main-content {
+  flex: 1;
+  padding: 24px 16px;
+}
+.site-footer {
+  background: var(--header-bg);
+  color: var(--header-fg);
+  text-align: center;
+  padding: 12px;
+  font-size: 0.95rem;
+  margin-top: auto;
+}
+
+
+a:focus, button:focus {
+  outline: 3px solid rgba(11,92,255,0.25);
+  outline-offset: 3px;
+}
+
+@media (max-width: 400px) {
+  .page-body {
+    font-size: 15px;
+  }
 }

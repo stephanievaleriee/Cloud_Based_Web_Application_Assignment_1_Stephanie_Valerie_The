@@ -10,7 +10,6 @@ export default function Header() {
     <header className="bg-gray-800 text-white p-4 flex justify-between items-center">
       <div className="font-bold text-sm">Student No: 12345678</div>
 
-      {/* Hamburger Button */}
       <button
         className="md:hidden block text-white"
         onClick={() => setMenuOpen(!menuOpen)}
@@ -18,7 +17,6 @@ export default function Header() {
         ☰
       </button>
 
-      {/* Menu */}
       <nav
         className={`${
           menuOpen ? "block" : "hidden"

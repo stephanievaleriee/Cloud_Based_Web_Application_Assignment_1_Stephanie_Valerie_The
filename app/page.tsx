@@ -1,103 +1,277 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+import React, { useState, useEffect } from 'react';
+
+interface Tab {
+  id: number;
+  title: string;
+  content: string;
+}
+
+export default function HomeTabsGenerator() {
+  const [tabs, setTabs] = useState<Tab[]>([]);
+  const [activeTab, setActiveTab] = useState<number | null>(null);
+  const [outputCode, setOutputCode] = useState('');
+  const [editingTitleId, setEditingTitleId] = useState<number | null>(null);
+
+  useEffect(() => {
+    const saved = localStorage.getItem('tabsData');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      setTabs(parsed);
+      if (parsed.length > 0) setActiveTab(parsed[0].id);
+    } else {
+      const initial = [{ id: 1, title: 'Tab 1', content: 'Welcome to Tab 1 content' }];
+      setTabs(initial);
+      setActiveTab(1);
+      localStorage.setItem('tabsData', JSON.stringify(initial));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('tabsData', JSON.stringify(tabs));
+  }, [tabs]);
+
+  const addTab = () => {
+    if (tabs.length >= 15) {
+      alert('Maximum of 15 tabs reached.');
+      return;
+    }
+    const newId = tabs.length ? tabs[tabs.length - 1].id + 1 : 1;
+    const newTab = { id: newId, title: `Tab ${newId}`, content: `This is Tab ${newId} content.` };
+    const updated = [...tabs, newTab];
+    setTabs(updated);
+    setActiveTab(newId);
+  };
+
+  const removeTab = (id: number) => {
+    const updated = tabs.filter((t) => t.id !== id);
+    setTabs(updated);
+    if (activeTab === id && updated.length > 0) {
+      setActiveTab(updated[0].id);
+    } else if (updated.length === 0) {
+      setActiveTab(null);
+    }
+  };
+
+  const updateTitle = (id: number, value: string) => {
+    setTabs(tabs.map((t) => (t.id === id ? { ...t, title: value } : t)));
+  };
+
+  const updateContent = (id: number, value: string) => {
+    setTabs(tabs.map((t) => (t.id === id ? { ...t, content: value } : t)));
+  };
+
+  const generateOutput = () => {
+    const htmlCode = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Generated Tabs</title>
+<style>
+  body { font-family: Arial; padding: 20px; }
+  .tab { display: inline-block; padding: 8px 12px; background: #eee; border: 1px solid #ccc; margin-right: 4px; cursor: pointer; }
+  .tab.active { background: #ccc; }
+  .tab-content { margin-top: 10px; border: 1px solid #ccc; padding: 10px; }
+</style>
+<script>
+  function showTab(i) {
+    var contents = document.querySelectorAll('.tab-content');
+    var tabs = document.querySelectorAll('.tab');
+    contents.forEach((c, idx) => {
+      c.style.display = idx === i ? 'block' : 'none';
+    });
+    tabs.forEach((t, idx) => {
+      t.classList.toggle('active', idx === i);
+    });
+  }
+</script>
+</head>
+<body>
+  <div>
+    ${tabs
+      .map(
+        (t, i) =>
+          `<div class="tab" onclick="showTab(${i})">${t.title}</div>`
+      )
+      .join('')}
+  </div>
+  ${tabs
+    .map(
+      (t, i) =>
+        `<div class="tab-content" style="display:${i === 0 ? 'block' : 'none'}">${t.content}</div>`
+    )
+    .join('')}
+</body>
+</html>
+    `.trim();
+
+    setOutputCode(htmlCode);
+  };
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <section className="container">
+      <h1 className="page-title">Tabs Generator</h1>
+      <p>
+        Create up to <strong>15 tabs</strong>. You can double-click a tab to rename it, edit its content, and export
+        HTML + JS code with inline CSS.
+      </p>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+      <div style={{ margin: '16px 0', display: 'flex', gap: '10px' }}>
+        <button
+          onClick={addTab}
+          style={{
+            background: '#0b5cff',
+            color: '#fff',
+            border: 'none',
+            padding: '8px 14px',
+            borderRadius: '6px',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+            transition: 'background 0.2s ease',
+          }}
+          onMouseOver={(e) => (e.currentTarget.style.background = '#0843b7')}
+          onMouseOut={(e) => (e.currentTarget.style.background = '#0b5cff')}
+        >
+          + Add Tab
+        </button>
+
+        <button
+          onClick={() => {
+            if (activeTab !== null) removeTab(activeTab);
+          }}
+          disabled={tabs.length === 0}
+          style={{
+            background: tabs.length === 0 ? '#aaa' : '#d9534f',
+            color: '#fff',
+            border: 'none',
+            padding: '8px 14px',
+            borderRadius: '6px',
+            cursor: tabs.length === 0 ? 'not-allowed' : 'pointer',
+            fontWeight: 'bold',
+            transition: 'background 0.2s ease',
+          }}
+          onMouseOver={(e) => {
+            if (tabs.length > 0) e.currentTarget.style.background = '#b52b27';
+          }}
+          onMouseOut={(e) => {
+            if (tabs.length > 0) e.currentTarget.style.background = '#d9534f';
+          }}
+        >
+          – Remove Tab
+        </button>
+      </div>
+
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '12px' }}>
+        {tabs.map((t) => (
+          <div
+            key={t.id}
+            onClick={() => setActiveTab(t.id)}
+            onDoubleClick={() => setEditingTitleId(t.id)}
+            style={{
+              padding: '8px 12px',
+              border: '1px solid #ccc',
+              background: activeTab === t.id ? '#ccc' : '#eee',
+              cursor: 'pointer',
+              borderRadius: '4px',
+            }}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            {editingTitleId === t.id ? (
+              <input
+                type="text"
+                value={t.title}
+                onChange={(e) => updateTitle(t.id, e.target.value)}
+                onBlur={() => setEditingTitleId(null)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') setEditingTitleId(null);
+                }}
+                autoFocus
+                style={{
+                  fontSize: '1rem',
+                  border: '1px solid #999',
+                  borderRadius: '4px',
+                  padding: '2px 6px',
+                }}
+              />
+            ) : (
+              <span>{t.title}</span>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {activeTab && (
+        <div style={{ border: '1px solid #ccc', padding: '12px', borderRadius: '6px' }}>
+          {tabs
+            .filter((t) => t.id === activeTab)
+            .map((t) => (
+              <div key={t.id}>
+                <strong>Content:</strong>
+                <textarea
+                  value={t.content}
+                  onChange={(e) => updateContent(t.id, e.target.value)}
+                  rows={6}
+                  style={{
+                    width: '100%',
+                    marginTop: '8px',
+                    borderRadius: '4px',
+                    border: '1px solid #ccc',
+                    padding: '8px',
+                    resize: 'vertical',
+                  }}
+                />
+              </div>
+            ))}
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+      )}
+
+      <div style={{ marginTop: '16px' }}>
+        <button
+          onClick={generateOutput}
+          disabled={tabs.length === 0}
+          style={{
+            padding: '8px 16px',
+            background: tabs.length === 0 ? '#aaa' : '#0b5cff',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '6px',
+            cursor: tabs.length === 0 ? 'not-allowed' : 'pointer',
+            fontWeight: 'bold',
+            transition: 'background 0.2s ease',
+          }}
+          onMouseOver={(e) => {
+            if (tabs.length > 0) e.currentTarget.style.background = '#0843b7';
+          }}
+          onMouseOut={(e) => {
+            if (tabs.length > 0) e.currentTarget.style.background = '#0b5cff';
+          }}
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+          Generate Output Code
+        </button>
+      </div>
+
+      {outputCode && (
+        <div style={{ marginTop: '20px' }}>
+          <h2>Output HTML:</h2>
+          <textarea
+            value={outputCode}
+            readOnly
+            rows={14}
+            style={{
+              width: '100%',
+              fontFamily: 'monospace',
+              background: '#f8f8f8',
+              border: '1px solid #ccc',
+              borderRadius: '6px',
+              padding: '8px',
+            }}
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+          <p style={{ fontSize: '0.9rem', color: '#555' }}>
+            Copy this code into a new file called <strong>Hello.html</strong> and open it in your browser.
+          </p>
+        </div>
+      )}
+    </section>
   );
 }
