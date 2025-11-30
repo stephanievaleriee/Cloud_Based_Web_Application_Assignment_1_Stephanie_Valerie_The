@@ -1,9 +1,13 @@
 "use client";
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function CodeEditor({ starter, onCheck }: any) {
   const [code, setCode] = useState(starter);
+
+  // ⭐ FIX: update editor when stage changes
+  useEffect(() => {
+    setCode(starter);
+  }, [starter]);
 
   return (
     <div>
@@ -20,8 +24,8 @@ export default function CodeEditor({ starter, onCheck }: any) {
           fontFamily: "monospace",
           padding: "12px",
           borderRadius: "8px",
-          marginBottom: "12px",
           border: "1px solid #444",
+          marginBottom: "12px",
         }}
       />
 

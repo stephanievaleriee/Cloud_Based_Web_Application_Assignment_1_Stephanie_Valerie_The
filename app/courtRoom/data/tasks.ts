@@ -7,7 +7,6 @@ export type Requirement = {
 export type Task = {
   id: number;
   title: string;
-  background: string;
   requirements: Requirement[];
   starterCode: string;
   validator: (code: string) => boolean;
@@ -18,28 +17,36 @@ export const tasks: Task[] = [
   {
     id: 1,
     title: "Fix ALT in Image",
-    background: "/workdesk.jpeg",
     requirements: [
-      { id: "alt", label: "Add alt attribute", hint: "Example: <img src='...' alt='Description'>" },
-      { id: "syntax", label: "Ensure correct img tag syntax", hint: "Make sure tag is closed properly." }
+      {
+        id: "alt",
+        label: "Add alt attribute",
+        hint: "Use alt=\"your description\" inside the image tag."
+      }
     ],
     starterCode: `<img src="cat.png">`,
     validator: (code: string) => {
-      return code.includes("alt=") && code.includes("<img");
+      return code.includes("alt=");
     },
-    punishment: "disability"
+    punishment: "disability" // matches assignment brief
   },
 
   {
     id: 2,
     title: "Fix Input Validation",
-    background: "/workdesk.jpeg",
     requirements: [
-      { id: "notEmpty", label: "Check for empty input", hint: "Use if (!age)" },
-      { id: "isNumber", label: "Validate number input", hint: "Use isNaN(age)" }
+      {
+        id: "empty",
+        label: "Check for empty field",
+        hint: "Use if (!value) { ... } to detect empty input."
+      },
+      {
+        id: "number",
+        label: "Validate numeric input",
+        hint: "Use isNaN(value) to ensure the input is a number."
+      }
     ],
-    starterCode:
-`function submit() {
+    starterCode: `function submit() {
   const age = document.getElementById("age").value
   alert("Your age is " + age)
 }`,
@@ -52,13 +59,19 @@ export const tasks: Task[] = [
   {
     id: 3,
     title: "Fix User Login",
-    background: "/workdesk.jpeg",
     requirements: [
-      { id: "operator", label: "Fix assignment operator (= → ===)", hint: "Use triple equals ===" },
-      { id: "password", label: "Check password correctly", hint: "Add pass === '1234'" }
+      {
+        id: "equals",
+        label: "Correct comparison operator",
+        hint: "Use === instead of = inside your if condition."
+      },
+      {
+        id: "password",
+        label: "Check password validity",
+        hint: "Ensure pass === '1234' is used."
+      }
     ],
-    starterCode:
-`function login(user, pass) {
+    starterCode: `function login(user, pass) {
   if (user = "admin") {
     return "Logged in"
   }
@@ -67,19 +80,25 @@ export const tasks: Task[] = [
     validator: (code: string) => {
       return code.includes("===") && code.includes("1234");
     },
-    punishment: "bankruptcy"
+    punishment: "bankruptcy" // matches assignment brief
   },
 
   {
     id: 4,
-    title: "Secure the Database Query",
-    background: "/workdesk.jpeg",
+    title: "Secure the Database",
     requirements: [
-      { id: "prepared", label: "Use parameterized query (?)", hint: "Use const query = '... WHERE id = ?'" },
-      { id: "execute", label: "Pass parameters safely", hint: "Use db.execute(query, [userId])" }
+      {
+        id: "prep",
+        label: "Use prepared statements",
+        hint: "Use a placeholder like ? in your SQL query."
+      },
+      {
+        id: "bind",
+        label: "Bind parameters",
+        hint: "Use [userId] when executing the query."
+      }
     ],
-    starterCode:
-`const query = "SELECT * FROM users WHERE id = " + userId;
+    starterCode: `const query = "SELECT * FROM users WHERE id = " + userId;
 db.execute(query);`,
     validator: (code: string) => {
       return code.includes("?") && code.includes("[userId]");

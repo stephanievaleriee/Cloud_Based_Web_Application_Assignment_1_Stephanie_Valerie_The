@@ -10,28 +10,28 @@ import CourtroomPunishment from "./components/courtroomPunishment";
 export default function CourtRoomPage() {
   const [timerStarted, setTimerStarted] = useState(false);
   const [timerFinished, setTimerFinished] = useState(false);
+  const [remainingSeconds, setRemainingSeconds] = useState(0);
   const [popup, setPopup] = useState("");
   const [punishment, setPunishment] = useState("");
 
-  // RANDOM DISTRACTION POPUPS
+  // DISTRACTION POPUPS
   useEffect(() => {
     if (!timerStarted) return;
 
     const messages = [
       "Boss: Are you done with sprint 1?",
       "Family: Can you pick up the kids?",
-      "Agile: Fix the title color to red!",
-      "System: Meeting in 10 minutes!"
+      "Agile Team: Please update the UI color.",
+      "System: Meeting in 10 minutes!",
     ];
 
     const interval = setInterval(() => {
       setPopup(messages[Math.floor(Math.random() * messages.length)]);
-    }, Math.random() * 10000 + 20000);
+    }, Math.random() * 8000 + 15000);
 
     return () => clearInterval(interval);
   }, [timerStarted]);
 
-  // WHEN PUNISHMENT TRIGGERS – TAKE OVER ENTIRE SCREEN
   if (punishment) {
     return (
       <CourtroomPunishment
@@ -42,44 +42,42 @@ export default function CourtRoomPage() {
   }
 
   return (
-    <>
-      {/* FULL PAGE BACKGROUND */}
-      <div
-        style={{
-          backgroundImage: "url('/workdesk.jpeg')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-          minHeight: "100vh",
-          width: "100%",
-          padding: "40px 20px",
-        }}
-      >
-        <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
-          <OverlayPanel>
-            <Timer
-              onStart={() => setTimerStarted(true)}
-              onFinish={() => setTimerFinished(true)}
+    <div
+      style={{
+        backgroundImage: "url('/workdesk.jpeg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        minHeight: "100vh",
+        padding: "40px 20px",
+      }}
+    >
+      <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
+        <OverlayPanel>
+          <Timer
+            onStart={(totalSec: number) => {
+              setRemainingSeconds(totalSec);
+              setTimerStarted(true);
+            }}
+            onTick={(sec: number) => setRemainingSeconds(sec)}
+            onFinish={() => setTimerFinished(true)}
+          />
+
+          {timerStarted && (
+            <TaskManager
+              remainingSeconds={remainingSeconds}
+              timerFinished={timerFinished}
+              onPunish={(p: string) => setPunishment(p)}
             />
+          )}
 
-            {timerStarted && (
-              <div style={{ marginTop: "20px" }}>
-                <TaskManager
-                  timerFinished={timerFinished}
-                  onPunish={(type: string) => setPunishment(type)}
-                />
-              </div>
-            )}
-          </OverlayPanel>
-        </div>
+          {/* ⭐ NEW: Notification INSIDE white box */}
+          {timerStarted && popup && (
+            <div style={{ marginTop: "20px" }}>
+              <DistractionPopup message={popup} onClose={() => setPopup("")} />
+            </div>
+          )}
+        </OverlayPanel>
       </div>
-
-      {popup && (
-        <DistractionPopup
-          message={popup}
-          onClose={() => setPopup("")}
-        />
-      )}
-    </>
+    </div>
   );
 }
