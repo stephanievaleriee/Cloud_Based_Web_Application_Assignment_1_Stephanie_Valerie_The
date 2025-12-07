@@ -14,6 +14,7 @@ export default function CourtRoomPage() {
   const [popup, setPopup] = useState("");
   const [punishment, setPunishment] = useState("");
 
+  // ✅ DISTRACTION POPUPS (UNCHANGED)
   useEffect(() => {
     if (!timerStarted) return;
 
@@ -31,6 +32,7 @@ export default function CourtRoomPage() {
     return () => clearInterval(interval);
   }, [timerStarted]);
 
+  // ✅ SAVE PROGRESS (UNCHANGED)
   async function saveProgress() {
     await fetch("/api/session-progress", {
       method: "POST",
@@ -42,7 +44,7 @@ export default function CourtRoomPage() {
       }),
     });
 
-    alert("Progress saved!");
+    alert("✅ Progress Saved!");
   }
 
   if (punishment) {
@@ -67,12 +69,36 @@ export default function CourtRoomPage() {
       <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
         <OverlayPanel>
           <Timer
-            onStart={(totalSec: number) => {
+            onStart={async (totalSec: number) => {
               setRemainingSeconds(totalSec);
               setTimerStarted(true);
+
+              // ✅ ✅ ✅ RESTORED: AUTO BACKLOG ENTRY WHEN SESSION STARTS
+              await fetch("/api/session-logs", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  sessionId: "test-session-1",
+                  event: "Session Started",
+                  details: `Started with ${Math.floor(totalSec / 60)} minutes`,
+                }),
+              });
             }}
             onTick={(sec: number) => setRemainingSeconds(sec)}
-            onFinish={() => setTimerFinished(true)}
+            onFinish={async () => {
+              setTimerFinished(true);
+
+              // ✅ Optional: Log finish (safe)
+              await fetch("/api/session-logs", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  sessionId: "test-session-1",
+                  event: "Session Finished",
+                  details: "Timer completed",
+                }),
+              });
+            }}
           />
 
           {timerStarted && (
@@ -80,18 +106,8 @@ export default function CourtRoomPage() {
               remainingSeconds={remainingSeconds}
               timerFinished={timerFinished}
               onPunish={(p: string) => setPunishment(p)}
+              onSaveProgress={saveProgress}
             />
-          )}
-
-          {timerStarted && (
-            <div style={{ marginTop: "20px", textAlign: "center" }}>
-              <button
-                onClick={saveProgress}
-                className="px-4 py-2 bg-blue-600 text-white rounded"
-              >
-                Save Progress
-              </button>
-            </div>
           )}
 
           {timerStarted && popup && (

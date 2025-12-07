@@ -24,6 +24,7 @@ export default function BacklogTable({ logs }: { logs: Log[] }) {
           <th className="px-3 py-2 border border-gray-600">Actions</th>
         </tr>
       </thead>
+
       <tbody>
         {logs.map((log) => (
           <tr key={log.id} className="bg-gray-800 hover:bg-gray-700">
@@ -38,16 +39,6 @@ export default function BacklogTable({ logs }: { logs: Log[] }) {
 
             {/* ✅ ACTIONS */}
             <td className="px-3 py-2 border border-gray-600 space-x-4">
-              {/* ✅ RESUME */}
-              <button
-                className="text-green-400 hover:underline"
-                onClick={() => {
-                  window.location.href = `/courtRoom?sessionId=${log.sessionId}`;
-                }}
-              >
-                Resume
-              </button>
-
               {/* ✅ EDIT */}
               <button
                 className="text-blue-400 hover:underline"
