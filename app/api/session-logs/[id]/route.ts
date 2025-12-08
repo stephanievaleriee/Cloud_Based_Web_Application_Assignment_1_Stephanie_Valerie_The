@@ -10,7 +10,10 @@ export async function PATCH(
 
   const updated = await prisma.sessionLog.update({
     where: { id: Number(id) },
-    data: body,
+    data: {
+      event: body.event,      
+      details: body.details,  
+    },
   });
 
   return NextResponse.json(updated);
