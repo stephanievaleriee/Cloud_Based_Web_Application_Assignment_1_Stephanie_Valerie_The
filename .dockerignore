@@ -5,7 +5,7 @@ npm-debug.log
 .github
 Dockerfile
 docker-compose.yml
-*.md
+.md
 .env
 .env.local
 .env.development

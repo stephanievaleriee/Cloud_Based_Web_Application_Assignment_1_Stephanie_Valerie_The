@@ -1,15 +1,23 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test('Court Room page loads and updates dynamically (timer running)', async ({ page }) => {
-  await page.goto('/courtRoom'); 
+test("Court Room page loads and updates dynamically (timer running)", async ({ page }) => {
+  await page.goto("/courtRoom");
 
-  await expect(page).toHaveURL(/courtRoom/);
+  // ✅ Find the timer display ONLY
+  const timer = page.locator(".text-3xl"); // this is your timer text class
 
-  const firstSnapshot = await page.content();
+  // ✅ Capture initial value
+  const firstValue = await timer.textContent();
 
-  await page.waitForTimeout(2500);
+  // ✅ Click Start
+  await page.getByRole("button", { name: /start/i }).click();
 
-  const secondSnapshot = await page.content();
+  // ✅ Wait 2 seconds
+  await page.waitForTimeout(2000);
 
-  expect(firstSnapshot).not.toBe(secondSnapshot);
+  // ✅ Capture updated value
+  const secondValue = await timer.textContent();
+
+  // ✅ Assert timer changed
+  expect(firstValue).not.toBe(secondValue);
 });
