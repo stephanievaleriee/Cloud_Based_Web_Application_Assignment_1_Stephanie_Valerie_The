@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getSessionLogs } from "@/services/sessionLogService";
 import BacklogTable from "./BacklogTable";
 
@@ -5,7 +7,6 @@ export default async function BacklogPage() {
   try {
     const result = await getSessionLogs("test-session-1");
 
-    // ✅ SAFETY: Handle both possible return formats
     const logs = Array.isArray(result) ? result : result?.logs ?? [];
 
     return (
