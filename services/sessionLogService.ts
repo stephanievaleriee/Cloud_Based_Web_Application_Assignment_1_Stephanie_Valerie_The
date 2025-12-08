@@ -1,18 +1,11 @@
-export async function logSessionEvent(
-  sessionId: string,
-  event: string,
-  details?: string
-) {
-  await fetch("/api/session-logs", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ sessionId, event, details }),
-  });
-}
-
 export async function getSessionLogs(sessionId: string) {
+  const baseUrl =
+    process.env.NODE_ENV === "production"
+      ? "https://cloud-based-web-application-assignm.vercel.app"
+      : "http://localhost:3000";
+
   const res = await fetch(
-    `/api/session-logs?sessionId=${sessionId}`,
+    `${baseUrl}/api/session-logs?sessionId=${sessionId}`,
     { cache: "no-store" }
   );
 
