@@ -1,19 +1,23 @@
 -- CreateTable
 CREATE TABLE "SessionLog" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "id" SERIAL NOT NULL,
     "sessionId" TEXT NOT NULL,
     "event" TEXT NOT NULL,
     "details" TEXT,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "SessionLog_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "SessionProgress" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "id" SERIAL NOT NULL,
     "sessionId" TEXT NOT NULL,
     "timeRemaining" INTEGER NOT NULL,
     "stage" INTEGER NOT NULL,
-    "updatedAt" DATETIME NOT NULL
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "SessionProgress_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
