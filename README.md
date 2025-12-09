@@ -1,66 +1,50 @@
-# Cloud Based Web Application
-### Assignment 1 – Web Application with Dark/Light Mode, Tabs Generator, and Responsive Navigation  
+# Assignment 2 – Cloud Based Web Application  
+**Student Name:** Stephanie Valerie  
+**Unit:** CSE3CWA / CSE5006  
+**Institution:** La Trobe University  
 
 ---
 
-## 👩‍💻 Student Information  
-**Name:** Stephanie Valerie The  
-**Student Number:** 22586667  
-**Subject:** Cloud Based Web Application
+## 📌 Project Overview
+
+This project is a Next.js web application developed as part of Assignment 2.  
+The application extends Assignment 1 and includes:
+
+- A game-based interface (Escape Room or Court Room)
+- API routes with full CRUD functionality
+- Prisma ORM with a **cloud-hosted PostgreSQL database (Neon)**
+- Automated testing using Playwright
+- Performance and accessibility testing
+- Instrumentation and observability
+- Cloud deployment readiness
+
+✅ This project uses a **real cloud database (Neon)**, not a local SQLite database.
 
 ---
 
-## 📝 Project Description  
+## 🧰 Technologies Used
 
-This project is a responsive web application built with **Next.js (App Router)** and **React**, designed to demonstrate key front-end development concepts including:  
-
-- Responsive navigation bar with a **hamburger menu** and **CSS transform**  
-- Persistent **dark/light mode theme switching**  
-- Dynamic **Tabs Generator** page with localStorage integration  
-- Modular layout with global **Header** and **Footer**  
-- Embedded About Page video section  
-- Clean, modern UI compliant with accessibility and responsive design principles  
-
-The application meets all marking criteria from the assignment brief and showcases interactive UI design best practices.
+- Next.js (App Router)
+- TypeScript
+- Prisma ORM
+- **PostgreSQL (Cloud – Neon)**
+- Playwright (Automated Testing)
+- Docker
+- Lighthouse
+- JMeter
 
 ---
 
-## ⚙️ Features Overview  
+# 🚀 FULL SETUP & INSTALLATION GUIDE (FOR MARKERS & DEVELOPERS)
 
-### User Interface 
-- Global **Header**, **Navigation Bar**, and **Footer** included in `layout.tsx`  
-- Responsive hamburger menu with **rotation animation**  
-- Navigation links: **Home**, **About**, **Escape Room**, **Coding Races**, **Court Room**  
-- Persistent active tab highlighting using `localStorage`  
-
-### Themes 
-- **Dark and Light Mode** supported  
-- Saved automatically via `localStorage`  
-- Smooth theme transitions using CSS variables  
-
-### Hamburger Menu 
-- Fully functional menu on small screens  
-- Includes **CSS transform animation (rotate)** when toggled  
-- Closes automatically after selecting a link  
-
-### Tabs Page 
-- Located on **Home Page (Tabs Generator)**  
-- Add or remove up to **15 tabs** dynamically  
-- Rename tabs inline (double-click to edit)  
-- Edit tab content  
-- Tabs and content are automatically saved in **localStorage**  
-
-### Output Button 
-- **Generate Output Code** button creates exportable HTML + inline CSS  
-- Output can be pasted directly into a `.html` file  
-- Demonstration includes output for 1 tab, 3 tabs, and 5 tabs  
-
-### GitHub Repository 
-- Contains several meaningful commits  
-- Includes **3 feature branches** (example: `feature/layout`, `feature/theme`, `feature-tabs`)  
-- Proper `.gitignore` file excluding `node_modules`  
-- Up-to-date **README.md**  
+⚠️ IMPORTANT:  
+This project uses a **CLOUD-HOSTED PostgreSQL database (Neon)**.  
+A local database is **NOT** used.  
+You **MUST** create a `.env` file to connect to the cloud database before Prisma can run.
 
 ---
 
-## 📁 Project Structure
+## ✅ 1. Clone the Repository
+```bash
+git clone <YOUR_GITHUB_REPO_LINK>
+cd <YOUR_PROJECT_FOLDER>
